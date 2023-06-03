@@ -1,0 +1,23 @@
+import java.io.*;
+import java.text.DecimalFormat;
+import static java.lang.Math.*;
+
+public class test7 {
+    public static void main(String[] args) throws IOException {
+        File file1 = new File("C:\\Users\\Валерий\\Desktop\\text7.txt");
+        FileWriter fwr = new FileWriter(file1);
+        fwr.write("Постановка задачи\n\nx >= -3 & x <= 3; x += 0.5\nесли x <= 0, то f(x) = sin(x)*cos(x)\nиначе f(x) = 2*pow(x, 2) + x\n\nВЫВОД ДАННЫХ\n\nПеременная f\s\sЗначение f(x)\n\n");
+        for (double x=-3; x <= 3; x+= 0.5){
+            DecimalFormat dec = new DecimalFormat("#.#");
+            if (x <= 0){
+                double f = sin(x)*cos(x);
+                fwr.write("f(" + x + ")\t=\t" + dec.format(f) + "\n");
+            }else{
+                double f = 2*pow(x, 2) + x;
+                fwr.write("f(" + x + ")\t=\t" + dec.format(f) + "\n");
+            }
+        }
+        fwr.flush();
+        fwr.close();
+    }
+}

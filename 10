@@ -1,0 +1,33 @@
+import java.io.*;
+import java.util.Scanner;
+import static java.lang.Math.*;
+
+public class test10 {
+    public static void main(String[] args) throws IOException {
+        File file1 = new File("C:\\Users\\Валерий\\Desktop\\text10.txt");
+        FileWriter fwr = new FileWriter(file1);
+        Scanner in=new Scanner(System.in);
+        double x = 0;
+        System.out.println("Введите значение x");
+        while (Math.abs(x = in.nextDouble()) >= 1){
+            System.out.println("Ошибка! Введите другое значение x");
+        }
+        int k = 1;
+        double s = 0;
+        for (double ep = 0.0001; ep <= 0.01; ep*=10){
+            s = 0;
+            k = 1;
+            while (log((1+x)/(1-x)-s) < ep){
+                s += 2*(pow(x, 2*k + 1))/(2 * k + 1);
+                k++;
+            }
+            fwr.write("Функция f(x) = log((1+x)/(1-x) для x = " + x + " равняется " + s + "\n"
+                    +"Результаты определения значений функции f(x) = log((1+x)/(1-x) с помощью ряда Маклорена\n"
+                    +"Погрешность итерационной процедуры "+ep+"\n"
+                    +"Значение функции по Маклорену\t\tПогрешность, %\tЧисло итераций\n"
+                    +"\t\t"+s+"\t\t\t\t\t"+ep*100+"\t\t\t"+k+"\n\n");
+        }
+        fwr.flush();
+        fwr.close();
+    }
+}

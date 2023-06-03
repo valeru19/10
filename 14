@@ -1,0 +1,123 @@
+import java.io.*;
+import java.text.DecimalFormat;
+
+import static java.lang.Double.parseDouble;
+
+public class test14 {
+    public static void main(String[] args) throws IOException {
+        File file1 = new File("C:\\Users\\Валерий\\Desktop\\text14.txt");
+        File file2 = new File("C:\\Users\\Валерий\\Desktop\\text14_1.txt");
+        BufferedReader fread = new BufferedReader(new FileReader(file1));
+        FileWriter fwr = new FileWriter(file2, true);
+        for (int i = 0; i <= 12; i++){
+            fread.readLine();
+        }
+        double maxSX = -100000.0, minSX = 100000.0, maxSY = -100000.0, minSY = 100000.0, maxSZ = -100000.0, minSZ = 100000.0,
+                maxSXY = -100000.0, minSXY = 100000.0, maxSYZ = -100000.0, minSYZ = 100000.0, maxSXZ = -100000.0, minSXZ = 100000.0,
+                sX = 0.0, sY = 0.0, sZ = 0.0, sXY = 0.0, sYZ = 0.0, sXZ = 0.0,
+                x = 0.0, y = 0.0, z = 0.0, xy = 0.0, yz = 0.0, xz = 0.0;
+        int summa = 0;
+        while(fread.ready()){
+            String[] nadoUbrat = fread.readLine().split("-0\\.");
+            for (int i = 1; i < nadoUbrat.length; i ++){
+                nadoUbrat[i] = "\s-0." + nadoUbrat[i];
+            }
+            String s = stroka(nadoUbrat).replaceFirst("\\s+", "");
+            String[] line = s.split("\\s+");
+            sX += parseDouble(line[1]);
+            sY += parseDouble(line[2]);
+            sZ += parseDouble(line[3]);
+            sXY += parseDouble(line[4]);
+            sYZ += parseDouble(line[5]);
+            sXZ += parseDouble(line[6]);
+            if (parseDouble(line[1]) > maxSX){
+                maxSX = parseDouble(line[1]);
+            }
+            if (parseDouble(line[1]) < minSX) {
+                minSX = parseDouble(line[1]);
+            }
+            if (parseDouble(line[2]) > maxSY){
+                maxSY = parseDouble(line[2]);
+            }
+            if (parseDouble(line[2]) < minSY) {
+                minSY = parseDouble(line[2]);
+            }
+            if (parseDouble(line[3]) > maxSZ){
+                maxSZ = parseDouble(line[3]);
+            }
+            if (parseDouble(line[3]) < minSZ) {
+                minSZ = parseDouble(line[3]);
+            }
+            if (parseDouble(line[4]) > maxSXY){
+                maxSXY = parseDouble(line[4]);
+            }
+            if (parseDouble(line[4]) < minSXY) {
+                minSXY = parseDouble(line[4]);
+            }
+            if (parseDouble(line[5]) > maxSYZ){
+                maxSYZ = parseDouble(line[5]);
+            }
+            if (parseDouble(line[5]) < minSYZ) {
+                minSYZ = parseDouble(line[5]);
+            }
+            if (parseDouble(line[6]) > maxSXZ){
+                maxSXZ = parseDouble(line[6]);
+            }
+            if (parseDouble(line[6]) < minSXZ) {
+                minSXZ = parseDouble(line[6]);
+            }
+            summa++;
+        }
+        x = sX/summa;
+        y = sY/summa;
+        z = sZ/summa;
+        xy = sXY/summa;
+        yz = sYZ/summa;
+        xz = sXZ/summa;
+        fwr.write("ВЫВОД\n\n\s\s\s\sМакс. значение\tМин.значение\tСреднее значение\n\n"
+                + "SX:\t" + maxSX+"\t\s\s" + minSX + "\t\s\s" + x + "\n\n"
+                + "SY:\t" + maxSY+"\t\s\s" + minSY + "\t\s\s" + y + "\n\n"
+                + "SZ:\t" + maxSZ+"\t\s\s" + minSZ + "\t\s\s" + z + "\n\n"
+                + "SXY:\t" + maxSXY+"\t\s\s" + minSXY + "\t\s\s" + xy + "\n\n"
+                + "SYZ:\t" + maxSYZ+"\t\t\s\s" + minSYZ + "\t\t\s\s" + yz + "\n\n"
+                + "SXZ: \t" + maxSXZ+"\t\t\s\s" + minSXZ + "\t\t\s\s" + xz + "\n\n");
+        fread.close();
+        BufferedReader fread2 = new BufferedReader(new FileReader(file1));
+        for (int i = 0; i <= 12; i++){
+            fread2.readLine();
+        }
+        double xo = 0.0, yo = 0.0, zo = 0.0, xyo = 0.0;
+        fwr.write("Процент отклонения\n\nSX\t\sSY\t\sSZ\tSXY\tSYZ\tSXZ\n\n");
+        while(fread2.ready()){
+            String[] nadoUbrat = fread2.readLine().split("-0\\.");
+            for (int i = 1; i < nadoUbrat.length; i ++){
+                nadoUbrat[i] = "\s-0." + nadoUbrat[i];
+            }
+            String s = stroka(nadoUbrat).replaceFirst("\\s+", "");
+            String[] line1 = s.split("\\s+");
+            xo = parseDouble(line1[1]);
+            yo = parseDouble(line1[2]);
+            zo = parseDouble(line1[3]);
+            xyo = parseDouble(line1[4]);
+            fwr.write(otklonenie(xo, x) + "\t"
+                    + otklonenie(yo, y) + "\t"
+                    + otklonenie(zo, z) + "\t"
+                    + otklonenie(xyo, xy) + "\t\s"
+                    + "0" + "\t\s"
+                    + "0" + "\n");
+        }
+        fwr.flush();
+        fwr.close();
+    }
+    public static String otklonenie(double x,double y){
+        DecimalFormat dec = new DecimalFormat("##");
+        return dec.format((x / y * 100) - 100);
+    }
+    public static String stroka(String [] mas){
+        StringBuilder prosto = new StringBuilder();
+        for (int i = 0; i < mas.length; i++){
+            prosto.append(mas[i]);
+        }
+        return String.valueOf(prosto);
+    }
+}

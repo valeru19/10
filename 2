@@ -1,0 +1,19 @@
+import java.io.*;
+
+public class test2 {
+    public static void main(String[] args) throws IOException {
+        File file1 = new File("C:\\Users\\Валерий\\Desktop\\text2.txt");
+        FileWriter fwr = new FileWriter(file1);
+        int a;
+        int res;
+        for (int i = 1; i<=9;i++){
+            for (int j =1; j<=9;j++) {
+                res = i - j;
+                fwr.write(i + " - " + j + " = " + res+ "\t" );
+            }
+            fwr.write("\n\n");
+        }
+        fwr.flush();
+        fwr.close();
+    }
+}

@@ -1,0 +1,150 @@
+import java.io.*;
+import java.util.*;
+
+public class test13 {
+    public static final String DELIMITER = "MATRIX";
+    public static final String FILE_1_NAME = "C:\\Users\\Валерий\\Desktop\\text13_1.txt";
+    public static final String FILE_2_NAME = "C:\\Users\\Валерий\\Desktop\\text13_2.txt";
+    public static final String FILE_3_NAME = "C:\\Users\\Валерий\\Desktop\\text13_3.txt";
+
+
+    public static void main(String[] args) throws IOException {
+        //считывание матриц из первого файла
+        BufferedReader fread1 = new BufferedReader(new FileReader(FILE_1_NAME));
+        ArrayList<int[][]> matrix1 = new ArrayList<>();
+        int m = 0;
+        int n = 0;
+        while (fread1.ready()){
+            String line = fread1.readLine();
+            if (!line.contains(DELIMITER)) {
+                String[] mas = line.split("\\s+");
+                m = Integer.parseInt(mas[0]);
+                n = Integer.parseInt(mas[1]);
+                int[][] matrix = new int[m][n];
+                for (int i = 0; i < m; i++) {
+                    line = fread1.readLine();
+                    mas = line.split("\\s+");
+                    for (int j = 0; j < n; j++) {
+                        matrix[i][j] = Integer.parseInt(mas[j]);
+                    }
+                }
+                matrix1.add(matrix);
+            }
+        }
+        fread1.close();
+        //считывание матриц из второго файла
+        BufferedReader fread2 = new BufferedReader(new FileReader(FILE_2_NAME));
+        ArrayList<int[][]> matrix2 = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        while (fread2.ready()){
+            String line2 = fread2.readLine();
+            if(!line2.contains(DELIMITER)) {
+                String[] mas = line2.split("\\s+");
+                x = Integer.parseInt(mas[0]);
+                y = Integer.parseInt(mas[1]);
+                int[][] matrix3 = new int[x][y];
+                for (int i = 0; i < x; i++) {
+                    line2 = fread2.readLine();
+                    mas = line2.split("\\s+");
+                    for (int j = 0; j < y; j++) {
+                        matrix3[i][j] = Integer.parseInt(mas[j]);
+                    }
+                }
+                matrix2.add(matrix3);
+            }
+        }
+        fread2.close();
+        //перемножение
+        ArrayList<int[][]> result = new ArrayList<>();
+        for (int i = 0; i < matrix1.size(); i ++){
+            int[][] res = proiz(matrix1.get(i), matrix2.get(i));
+            result.add(res);
+        }
+        //запись ответа в третий файл
+        writeResults(FILE_3_NAME, matrix1, matrix2, result);
+        //вывод на экран содержимого всех файлов
+        System.out.println("Первый файл:");
+        System.out.println(readFile(FILE_1_NAME));
+        System.out.println("Второй файл:");
+        System.out.println(readFile(FILE_2_NAME));
+        System.out.println("Третий файл:");
+        System.out.println(readFile(FILE_3_NAME));
+
+    }
+    public static int[][] proiz(int[][] a, int[][] b) {
+        int rowsA = a.length;
+        int colsA = a[0].length;
+        int rowsB = b.length;
+        int colsB = b[0].length;
+
+        if (colsA != rowsB) {
+            throw new IllegalArgumentException("Ошибка! Какие-то матрицы невозможно перемножить."); // матрицы не совместимы
+        }
+
+        int[][] result = new int[rowsA][colsB];
+
+        for (int i = 0; i < rowsA; i++) {
+            for (int j = 0; j < colsB; j++) {
+                for (int k = 0; k < colsA; k++) {
+                    result[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+
+        return result;
+    }
+    private static void writeResults(String fileName, List<int[][]> matrices1, List<int[][]> matrices2, List<int[][]> results) throws IOException {
+        FileWriter fwr = new FileWriter(fileName);
+        for(int i = 0; i < matrices1.size(); i++) {
+            // Начинаем компонент
+            fwr.write("НАЧАЛО\n");
+
+            // Записываем первую матрицу
+            int[][] matrix1 = matrices1.get(i);
+            fwr.write("\nПервая матрица\nЕе размерность\n" + matrix1.length + " " + matrix1[0].length + "\nЭлементы матрицы\n");
+            for(int j = 0; j < matrix1.length; j++) {
+                for(int k = 0; k < matrix1[j].length; k++) {
+                    fwr.write(matrix1[j][k] + " ");
+                }
+                fwr.write("\n");
+            }
+
+            // Записываем вторую матрицу
+            int[][] matrix2 = matrices2.get(i);
+            fwr.write("\nВторая матрица\nЕе размерность\n" + matrix2.length + " " + matrix2[0].length + "\nЭлементы матрицы\n");
+            for(int j = 0; j < matrix2.length; j++) {
+                for(int k = 0; k < matrix2[j].length; k++) {
+                    fwr.write(matrix2[j][k] + " ");
+                }
+                fwr.write("\n");
+            }
+
+            // Записываем третью матрицу
+            int[][] result = results.get(i);
+            fwr.write("\nМатрица: результат умножения\nЕе размерность\n" + result.length + " " + result[0].length + "\nЭлементы матрицы\n");
+            for(int j = 0; j < result.length; j++) {
+                for(int k = 0; k < result[j].length; k++) {
+                    fwr.write(result[j][k] + " ");
+                }
+                fwr.write("\n");
+            }
+
+            // Заканчиваем компонент
+            fwr.write("КОНЕЦ\n");
+        }
+        fwr.flush();
+        fwr.close();
+    }
+    private static String readFile(String fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String line;
+        StringBuilder builder = new StringBuilder();
+        while (br.ready()) {
+            line = br.readLine();
+            builder.append(line).append("\n");
+        }
+        br.close();
+        return builder.toString();
+    }
+}
